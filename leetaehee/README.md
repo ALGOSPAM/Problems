@@ -1,117 +1,109 @@
-# Summer/Winter Coding(~2018) - 스킬트리
+# 연습문제 - 멀리 뛰기
 
-https://programmers.co.kr/learn/courses/30/lessons/49993
+https://programmers.co.kr/learn/courses/30/lessons/12914
 
 
 ```Java
-import java.util.*;
-
 class Solution {
-    public int solution(String skill, String[] skill_trees) {
-        int answer = 0;
+    public long solution(int n) {
+        if(n <= 2) return n;
         
-        // 스킬 순서와 상관이 없는 기타 스킬을 지우는 단계.
-        for(int i=0; i<skill_trees.length; i++) {
-            String temp = "";   // 스킬 순서와 상관없는 스킬을 지운 결과를 담는 변수
-            boolean flag = true;    // 스킬 순서에 맞는지 검사 true = 맞음, false = 안맞음
-            
-            // 스킬트리 배열에서 스킬트리를 꺼내서 스킬과 비교하고, 순서와 관련없는 불필요한 스킬은 제거한다.
-            for(int j=0; j<skill_trees[i].length(); j++) {
-                if( skill.contains( Character.toString(skill_trees[i].charAt(j)) ) ) {
-                    temp += skill_trees[i].charAt(j);
-                }
-            }
-
-            // System.out.println(temp);    // 스킬트리에 없는 스킬이 지워졌는지 확인용
-            
-            // 불필요한 값이 제거된 스킬트리를 스킬순서와 비교한다.
-            for(int l=0; l<temp.length(); l++) {
-                if(temp.charAt(l) != skill.charAt(l))
-                    flag = false;
-            }
-            
-            if(flag)
-                answer++;
+        long [] arr = new long[n];
+        arr[0] = 1;
+        arr[1] = 2;
+        
+        for(int i=2; i<n; i++) {
+            arr[i] = (arr[i-2] + arr[i-1]) % 1234567;
         }
         
-        return answer;
+        return arr[n-1];
     }
+
+// 재귀 방식(속도가 느려서 정답은 아님)
+//     public void func(int n) {
+//         if(n == 0) {
+//             cnt++;
+//             return;
+//         }
+            
+//         if(n > 0)
+//             func(n-1);
+//         if(n-1 > 0)
+//             func(n-2);
+//     }
 }
 
 ```
+멀리 뛸 수 있는 방법을 생각해보면 피보나치 수열과 동일하다. 피보나치 수열은 일반적으로 O(n)으로 해결할 수 있다.  
+재귀방식으로도 풀어보면 좋을 것 같다.
 
-시간복잡도 : O(n^2)  
-기준이 되는 skill 값과 skill_trees를 for문으로 반복하면서 문자열의 문자를 하나하나 비교하는 방법이라 조금 비효율적인 것 같습니다.  
-개선할 방법이 있을지는 조금 더 생각을 해봐야..ㅠ
+시간복잡도 : O(n)  
+
 
 
 <br />
 
-# 찾아라 프로그래밍 마에스터 - 게임 맵 최단거리
-https://programmers.co.kr/learn/courses/30/lessons/1844
+# 2019 KAKAO BLIND RECRUITMENT - 오픈채팅방
+
+https://programmers.co.kr/learn/courses/30/lessons/42888
 
 
 ```Java
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.ArrayList;
+
 class Solution {
-    public int[] hor = {-1,1,0,0}; //좌, 우, 상, 하
-    public int[] ver = {0,0,-1,1}; //좌, 우, 상, 하
-    public int min = Integer.MAX_VALUE;
-    public boolean endFlag = false;
-    
-    public int solution(int[][] maps) {
-        //int answer = 0;
+    public String[] solution(String[] record) {
+        String[][] strArr = new String[record.length][3];
         
-        // 배열 복사
-        // for(int i=0; i<course.length; i++) {
-        //     for(int j=0; j<course[0].length; j++) {
-        //         System.out.print(course[i][j] + " ");
-        //     }
-        //     System.out.println();
+        // 메시지를 명령어, uid, 닉네임으로 나눈다.
+        for(int i=0; i<record.length; i++) {
+            strArr[i] = record[i].split(" ");
+        }
+        
+        // uid와 닉네임을 저장할 맵을 만든다.
+        // 맵은 같은 키값으로 값을 여러 번 저장하면, 가장 마지막으로 저장한 값만 남는다.
+        HashMap<String, String> map = new HashMap<>();
+        
+        // 맵의 특성을 이용해 [uid : 닉네임] 저장을 모든 메시지에 대해서 실행한다.
+        // 아래 for문을 실행하고 나면 map에 uid에 대한 마지막 닉네임이 저장됨.
+        // 단 Leave는 뺀다. 닉네임 변화와 무관함.
+        for(int i=0; i<strArr.length; i++) {
+            if(!strArr[i][0].equals("Leave")) {
+                map.put(strArr[i][1], strArr[i][2]);
+            }
+        }
+        
+        // 결과의 크기를 모르므로 배열 크기 조절이 자유로운 ArrayList를 활용
+        ArrayList<String> list = new ArrayList<String>();
+        
+        // 입력받은 메시지 중 Enter, Leave만 골라서 해당 uid에 맞는 마지막 닉네임으로 변경해준다.
+        for(int i=0; i<strArr.length; i++) {
+            if(strArr[i][0].equals("Enter")) {
+                list.add(map.get(strArr[i][1]) + "님이 들어왔습니다.");
+            } else if(strArr[i][0].equals("Leave")) {
+                list.add(map.get(strArr[i][1]) + "님이 나갔습니다.");
+            }
+        }
+        
+        // 잘 나오는지 확인용
+        // for(int i=0; i<list.size(); i++) {
+        //     System.out.println(list.get(i));
         // }
         
-        // 0,0에서 탐험 시작
-        explore(maps, new int[] {0,0}, 0);
+        // 메소드 반환형에 맞춰 ArrayList를 배열로 변경한다.
+        String[] answer = list.toArray(new String[0]);
         
-        if(endFlag == false) {
-            return -1;
-        }
-        
-        return min;
+        return answer;
     }
-    
-    public void explore(int[][] course, int[] pos, int dist) {
-        course[pos[0]][pos[1]] = 0; //지나갔다고 표시
-        dist++; //이동거리 +1
-        
-        // System.out.println("현재 위치 : " + pos[0] + ", " + pos[1] + "/ 현재 거리 : " + dist);
-        
-        for(int i=0; i<4; i++) {
-            if(pos[0] + ver[i] >= 0 && pos[0] + ver[i] < course.length) {
-                if(pos[1] + hor[i] >= 0 && pos[1] + hor[i] < course[0].length) {
-                    if(course [pos[0] + ver[i]] [pos[1] + hor[i]] == 1) {
-                        explore(course, new int[] {pos[0] + ver[i], pos[1] + hor[i]}, dist);
-                    }
-                }
-            }
-        }
-        
-        if(pos[0] == course.length-1 && pos[1] == course[0].length-1) {
-            if(dist < min) {
-                min = dist;
-            }
-            endFlag = true;
-        }
-        
-        return;
-    }
-    
 }
 ```
 
-정확성 36.1
-효율성 0
+자바 map의 특성을 이용해서 문제를 쉽게 풀었다.  
+map은 같은 키값의 데이터가 입력되면 항상 마지막에 입력되는 키값만 저장한다.
+그리고 ArrayList가 배열 크기 조절이 자유롭고 배열로 반환할 수 있어 문제풀이에 유용함. 
 
-예제케이스는 정답인데, 실제로 돌려보면 풀이가 틀렸습니다.  
-어디에서 틀렸는지 테스트 케이스를 추가로 더 확인해봐야 할 것 같습니다.
-
-
+시간복잡도 : O(n)
