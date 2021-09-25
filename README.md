@@ -12,7 +12,7 @@ function solution(numbers) {
 </code>
 </pre>
 
-#k번째수
+# k번째수
 ## javascript
 
 <pre>
