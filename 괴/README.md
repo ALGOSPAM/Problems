@@ -1,58 +1,89 @@
-# 1528. Shuffle String
-# https://leetcode.com/problems/shuffle-string/
+# 로또의 최고 순위와 최저 순위
+# https://school.programmers.co.kr/learn/courses/30/lessons/77484
 
 ```python
-class Solution:
-    def restoreString(self, s: str, indices: List[int]) -> str:
+def solution(lottos, win_nums):
+    
+    dict = {}
+    
+    # 맞은 갯수 = 등수
+    dict[6] = 1
+    dict[5] = 2
+    dict[4] = 3
+    dict[3] = 4
+    dict[2] = 5
+    dict[1] = 6
+    dict[0] = 6
+    
+    answer = []
+    max = 0
+    min = 0
+    
+    for lotto in lottos:
         
-        words = []
-        
-        # 문자와 대응되는 숫자를 배열로 저장 : [숫자, 문자]
-        for i in range(len(s)):
-            words.append([indices[i], s[i]])
-            
-        # 배열을 정렬
-        words.sort()
-        
-        result = ''
-        
-        # 정렬된 배열의 문자를 결과 문자열로 생성
-        for i in range(len(words)):
-            result += words[i][1]
-            
-        return result
+        if lotto == 0:
+            max += 1
+        elif lotto in win_nums:
+            max += 1
+            min += 1
+    
+    answer.append(dict[max])
+    answer.append(dict[min])
+    
+    return answer
 ```
 
-# 1791. Find Center of Star Graph
-# https://leetcode.com/problems/find-center-of-star-graph/
+# 2299. Strong Password Checker II
+# https://leetcode.com/problems/strong-password-checker-ii/
 
 ```python
 class Solution:
-    def findCenter(self, edges: List[List[int]]) -> int:
+    def strongPasswordCheckerII(self, password: str) -> bool:
+        isStrongPwd = False
         
-        dict = {}
+        num = 0
+        lower = 0
+        upper = 0
+        schar = 0
+        isNear = False
         
-        # 각 노드의 번호를 딕셔너리에 저장
-        for i in range(0, 2):
-            star = edges[i]
+        length = len(password)
+        
+        # 적어도 8문자가 있습니다.
+        if length < 8:
+            return False
+        
+        beforeCharCode = 0
+        
+        for i in range(length):
             
-            if star[0] in dict:
-                dict[star[0]] += 1
-            else:
-                dict[star[0]] = 1
-            if star[1] in dict:
-                dict[star[1]] += 1
-            else:
-                dict[star[1]] = 1
+            # 인접한 위치에 동일한 문자가 포함되어 있지 않습니다 
+            if beforeCharCode == ord(password[i]):
+                return False
+            
+            if password[i].isdecimal():
+                num += 1
+            if password[i].isupper():
+                upper += 1
+            if password[i].islower():
+                lower += 1
+            if password[i].isalnum() == False:
+                schar += 1
         
-        max_num = 0
-        max_value = 0
+            beforeCharCode = ord(password[i])
         
-        # 저장된 딕셔너리의 가장 큰 수를 찾음
-        for num in dict:
-            if max_value < dict[num]:
-                max_value = dict[num]
-                max_num = num
+        # 적어도 하나의 대문자 가 포함되어 있습니다 .
+        if upper < 1:
+            return False
+        # 적어도 하나의 소문자 가 포함되어 있습니다 .
+        if lower < 1:
+            return False
+        # 적어도 하나의 숫자 가 포함되어 있습니다 .
+        if num < 1:
+            return False
+        # 적어도 하나의 특수 문자 가 포함되어 있습니다 . 
+        if schar < 1:
+            return False
         
-        return max_num
+        return True  
 ```
