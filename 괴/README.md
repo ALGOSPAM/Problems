@@ -1,89 +1,64 @@
-# 로또의 최고 순위와 최저 순위
-# https://school.programmers.co.kr/learn/courses/30/lessons/77484
+# N-Queen
+# https://school.programmers.co.kr/learn/courses/30/lessons/12952
 
 ```python
-def solution(lottos, win_nums):
-    
-    dict = {}
-    
-    # 맞은 갯수 = 등수
-    dict[6] = 1
-    dict[5] = 2
-    dict[4] = 3
-    dict[3] = 4
-    dict[2] = 5
-    dict[1] = 6
-    dict[0] = 6
-    
-    answer = []
-    max = 0
-    min = 0
-    
-    for lotto in lottos:
-        
-        if lotto == 0:
-            max += 1
-        elif lotto in win_nums:
-            max += 1
-            min += 1
-    
-    answer.append(dict[max])
-    answer.append(dict[min])
-    
-    return answer
+
 ```
 
-# 2299. Strong Password Checker II
-# https://leetcode.com/problems/strong-password-checker-ii/
+# 1910. Remove All Occurrences of a Substring
+# https://leetcode.com/problems/remove-all-occurrences-of-a-substring/
 
 ```python
 class Solution:
-    def strongPasswordCheckerII(self, password: str) -> bool:
-        isStrongPwd = False
+    def removeOccurrences(self, s: str, part: str) -> str:
         
-        num = 0
-        lower = 0
-        upper = 0
-        schar = 0
-        isNear = False
+        while s.count(part):
+            s = s[0:s.index(part) + len(part)].replace(part, '') + s[s.index(part) + len(part):]
+
+        return s
+```
+
+# 2022.03.20 Remove All Occurrences of a Substring 문제를 풀어 다른 문제를 풀었습니다.
+
+# 2284. Sender With Largest Word Count
+# https://leetcode.com/problems/sender-with-largest-word-count/
+
+```python
+class Solution:
+    def largestWordCount(self, messages: List[str], senders: List[str]) -> str:
         
-        length = len(password)
+        dict = {}
         
-        # 적어도 8문자가 있습니다.
-        if length < 8:
-            return False
-        
-        beforeCharCode = 0
-        
-        for i in range(length):
+        for i in range(len(senders)):
             
-            # 인접한 위치에 동일한 문자가 포함되어 있지 않습니다 
-            if beforeCharCode == ord(password[i]):
-                return False
+            sender = senders[i]
+            message = messages[i]
             
-            if password[i].isdecimal():
-                num += 1
-            if password[i].isupper():
-                upper += 1
-            if password[i].islower():
-                lower += 1
-            if password[i].isalnum() == False:
-                schar += 1
+            words = message.count(' ') + 1
+            
+            if sender in dict:
+                dict[sender] += words 
+            else:
+                dict[sender] = words
         
-            beforeCharCode = ord(password[i])
+        win = []
+        count = 0
         
-        # 적어도 하나의 대문자 가 포함되어 있습니다 .
-        if upper < 1:
-            return False
-        # 적어도 하나의 소문자 가 포함되어 있습니다 .
-        if lower < 1:
-            return False
-        # 적어도 하나의 숫자 가 포함되어 있습니다 .
-        if num < 1:
-            return False
-        # 적어도 하나의 특수 문자 가 포함되어 있습니다 . 
-        if schar < 1:
-            return False
+        for key, value in dict.items():
+            
+            if count < value:
+                win = []
+                win.append(key)
+                count = value
+            elif count == value:
+                if ord(win[0][0:1]) < ord(key[0:1]):
+                    win = []
+                    win.append(key)
+                elif ord(win[0][0:1]) == ord(key[0:1]):
+                    win.append(key)
         
-        return True  
+        if len(win) > 1:
+            return sorted(win, reverse = True)[0]
+        else:
+            return win[0]
 ```
