@@ -1,0 +1,20 @@
+# 1910. Remove All Occurrences of a Substring [JAVA]
+# 예상 시간복잡도 O(n)
+
+```java
+class Solution {
+    public String removeOccurrences(String s, String part) {
+        
+        StringBuilder sb = new StringBuilder(s);
+        
+        int index = sb.indexOf(part);
+        
+        while (sb.length() != 0 && index != -1) {
+            sb.delete(index, index + part.length());
+            index = sb.indexOf(part);
+        }
+        
+        return sb.toString();
+    }
+}
+```
