@@ -64,3 +64,28 @@ int main() {
 	return 0;
 }
 ```
+
+철자 분리 집합
+https://level.goorm.io/exam/158413/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EB%A8%BC%EB%8D%B0%EC%9D%B4-2%ED%9A%8C/quiz/2
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+int main() 
+{
+	int n;
+	cin >> n;
+	string str;
+	cin >> str;
+	int count = 0;
+	for(int i = 0; i < str.size(); ++i)
+	{
+		if(str[i] != str[i+1])
+			count += 1;
+	}
+	
+	cout << count << endl;
+	
+	return 0;
+}
+```
