@@ -1,3 +1,49 @@
+폭탄 구현하기
+https://level.goorm.io/exam/158413/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EB%A8%BC%EB%8D%B0%EC%9D%B4-2%ED%9A%8C/quiz/4
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() 
+{
+	int n;
+	cin >> n;
+	int k;
+	cin >> k;
+	
+	vector<vector<int>> list(n+2, vector<int>(n+2,0));
+	
+	for(int i = 0; i < k; ++i)
+	{
+		int a; int b;
+		cin >> a; 
+		cin >> b;
+		
+		list[a][b] += 1;
+		
+		if(a + 1 < n+1)
+			list[a+1][b] += 1;
+		if(a - 1 > 0)
+			list[a-1][b] += 1;
+		if(b + 1 < n+1)
+			list[a][b+1] += 1;
+		if(b - 1 > 0)
+			list[a][b-1] += 1;
+	}
+	
+	int size = 0;
+	for(int i = 0; i < list.size(); ++i)
+	{
+		for(int j = 0; j < list[i].size(); ++j)
+			size += list[i][j];
+	}
+	
+	cout << size << endl;
+	
+	return 0;
+}
+```
 출석부
 https://level.goorm.io/exam/158413/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EB%A8%BC%EB%8D%B0%EC%9D%B4-2%ED%9A%8C/quiz/3
 ```cpp
