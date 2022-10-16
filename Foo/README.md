@@ -1,3 +1,45 @@
+출석부
+https://level.goorm.io/exam/158413/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EB%A8%BC%EB%8D%B0%EC%9D%B4-2%ED%9A%8C/quiz/3
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+int main() 
+{
+	int n;
+	cin >> n;
+	int k;
+	cin >> k;
+	map<string, vector<float>> list;
+	
+	for(int i = 0; i < n; ++i)
+	{
+		string name;
+		cin >> name;
+		float height;
+		cin >> height;
+		
+		list[name].push_back(height);
+	}
+	int count = 0;
+	for(auto temp : list)
+	{
+		vector<float> heights = temp.second;
+		sort(heights.begin(), heights.end());
+		
+		for(int i = 0; i < heights.size(); ++i, ++count)
+		{
+			if(count == k-1){
+				cout << temp.first << " " << fixed << setprecision(2) << heights[i] << " " << endl;
+				return 0;
+			}
+		}
+	}
+	
+	return 0;
+}
+```
+
 합격자 찾기
 https://level.goorm.io/exam/158413/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EB%A8%BC%EB%8D%B0%EC%9D%B4-2%ED%9A%8C/quiz/1
 ```cpp
