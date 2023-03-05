@@ -1,170 +1,96 @@
-https://leetcode.com/problems/island-perimeter/
+https://school.programmers.co.kr/learn/courses/30/lessons/120866
 
 ``` C#
+using System;
+using System.Collections.Generic;
 
 public class Solution {
-    public int IslandPerimeter(int[][] grid) {
-            var result = 0;
-
-    var queue = new Queue<(int, int)>();
-    var ySize = grid.Length;
-    var xSize = grid[0].Length;
-
-    (int, int) startingPoint = (0, 0);
-
-    for (int i = 0; i < grid.Length; i++)
-    {
-        var isSet = false;
-        for (int j = 0; j < grid[0].Length; j++)
+    public int solution(int[,] board) {
+        var width = board.GetLength(0);
+        var height = board.GetLength(1);
+        
+        var maxXIndex = width - 1;
+        var maxYIndex = height - 1;
+        
+        var safetyZones = new HashSet<(int, int)>();
+        
+        for (int i = 0; i < width; i++)
         {
-            if (grid[i][j] == 1)
+            for (int j = 0; j < height; j++)
             {
-                startingPoint = (i, j);
-                isSet = true;
-                break;
+                safetyZones.Add((i, j));
             }
         }
 
-        if (isSet)
+        for (int i = 0; i <= maxXIndex; i++)
         {
-            break;
-        }
-    }
-
-    queue.Enqueue((startingPoint.Item1, startingPoint.Item2));
-
-    while (queue.TryDequeue(out var point))
-    {
-        if (grid[point.Item1][point.Item2] == 2)
-        {
-            continue;
-        }
-
-        grid[point.Item1][point.Item2] = 2;
-
-        var adjacentLandCount = 0;
-
-        var leftPoint = (point.Item1, point.Item2 - 1);
-        var rightPoint = (point.Item1, point.Item2 + 1);
-        var topPoint = (point.Item1 - 1, point.Item2);
-        var bottomPoint = (point.Item1 + 1, point.Item2);
-
-        if (leftPoint.Item2 >= 0 &&
-            grid[leftPoint.Item1][leftPoint.Item2] != 0)
-        {
-            adjacentLandCount++;
-            if (grid[leftPoint.Item1][leftPoint.Item2] == 1)
+            for (int j = 0; j <= maxYIndex; j++)
             {
-                queue.Enqueue(leftPoint);
+                if (board[i, j] == 1)
+                {
+                    var startX = Math.Max(0, i - 1);
+                    var startY = Math.Max(0, j - 1);
+                    
+                    var endX = Math.Min(maxXIndex, i + 1);
+                    var endY = Math.Min(maxYIndex, j + 1);
+                    
+                    for (int xIndex = startX; xIndex <= endX; xIndex++)
+                    {
+                        for (int yIndex = startY; yIndex <= endY; yIndex++)
+                        {
+                            safetyZones.Remove((xIndex, yIndex));
+                        }
+                    }
+                }
             }
         }
-
-        if (rightPoint.Item2 < xSize &&
-            grid[rightPoint.Item1][rightPoint.Item2] != 0)
-        {
-            adjacentLandCount++;
-            if (grid[rightPoint.Item1][rightPoint.Item2] == 1)
-            {
-                queue.Enqueue(rightPoint);
-            }
-        }
-
-        if (topPoint.Item1 >= 0 &&
-            grid[topPoint.Item1][topPoint.Item2] != 0)
-        {
-            adjacentLandCount++;
-            if (grid[topPoint.Item1][topPoint.Item2] == 1)
-            {
-                queue.Enqueue(topPoint);
-            }
-        }
-
-        if (bottomPoint.Item1 < ySize &&
-            grid[bottomPoint.Item1][bottomPoint.Item2] != 0)
-        {
-            adjacentLandCount++;
-            if (grid[bottomPoint.Item1][bottomPoint.Item2] == 1)
-            {
-                queue.Enqueue(bottomPoint);
-            }
-        }
-
-        result += 4 - adjacentLandCount;
-    }
-
-    return result;
+        
+        return safetyZones.Count;
     }
 }
 ```
 
-https://leetcode.com/problems/design-circular-queue/
+https://leetcode.com/problems/deepest-leaves-sum/
 
 ``` C#
-public class MyCircularQueue {
-    int[] data;
-    int startIndex = 0;
-    int inputCount = 0;
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left;
+ *     public TreeNode right;
+ *     public TreeNode(int val=0, TreeNode left=null, TreeNode right=null) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+public class Solution {
 
-    public MyCircularQueue(int k)
+    Dictionary<int, int> dictionary = new Dictionary<int, int>();
+
+    public int DeepestLeavesSum(TreeNode root) 
     {
-        data = new int[k];
+        Travel(root, 0);
+        return dictionary.Last().Value;
     }
 
-    public bool EnQueue(int value)
+    void Travel(TreeNode root, int depth)
     {
-        if (inputCount >= data.Length)
+        if (root == null)
         {
-            return false;
+            return;
         }
 
-        data[(startIndex + inputCount) % data.Length] = value;
-        inputCount++;
-
-        return true;
-    }
-
-    public bool DeQueue()
-    {
-        if (inputCount < 1)
+        if (!dictionary.ContainsKey(depth))
         {
-            return false;
+            dictionary.Add(depth, 0);
         }
 
-        inputCount--;
-
-        startIndex = ++startIndex % data.Length;
-
-        return true;
-    }
-
-    public int Front()
-    {
-        if (inputCount < 1)
-        {
-            return -1;
-        }
-
-        return data[startIndex];
-    }
-
-    public int Rear()
-    {
-        if (inputCount < 1)
-        {
-            return -1;
-        }
-
-        return data[(startIndex + inputCount - 1) % data.Length];
-    }
-
-    public bool IsEmpty()
-    {
-        return inputCount == 0;
-    }
-
-    public bool IsFull()
-    {
-        return inputCount == data.Length;
+        dictionary[depth] += root.val;
+        Travel(root.left, depth + 1);
+        Travel(root.right, depth + 1);
     }
 }
 ```
