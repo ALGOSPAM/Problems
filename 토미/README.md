@@ -1,56 +1,4 @@
-https://school.programmers.co.kr/learn/courses/30/lessons/120866
-
-``` C#
-using System;
-using System.Collections.Generic;
-
-public class Solution {
-    public int solution(int[,] board) {
-        var width = board.GetLength(0);
-        var height = board.GetLength(1);
-        
-        var maxXIndex = width - 1;
-        var maxYIndex = height - 1;
-        
-        var safetyZones = new HashSet<(int, int)>();
-        
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                safetyZones.Add((i, j));
-            }
-        }
-
-        for (int i = 0; i <= maxXIndex; i++)
-        {
-            for (int j = 0; j <= maxYIndex; j++)
-            {
-                if (board[i, j] == 1)
-                {
-                    var startX = Math.Max(0, i - 1);
-                    var startY = Math.Max(0, j - 1);
-                    
-                    var endX = Math.Min(maxXIndex, i + 1);
-                    var endY = Math.Min(maxYIndex, j + 1);
-                    
-                    for (int xIndex = startX; xIndex <= endX; xIndex++)
-                    {
-                        for (int yIndex = startY; yIndex <= endY; yIndex++)
-                        {
-                            safetyZones.Remove((xIndex, yIndex));
-                        }
-                    }
-                }
-            }
-        }
-        
-        return safetyZones.Count;
-    }
-}
-```
-
-https://leetcode.com/problems/deepest-leaves-sum/
+https://leetcode.com/problems/insert-into-a-binary-search-tree/
 
 ``` C#
 /**
@@ -66,31 +14,111 @@ https://leetcode.com/problems/deepest-leaves-sum/
  *     }
  * }
  */
-public class Solution {
-
-    Dictionary<int, int> dictionary = new Dictionary<int, int>();
-
-    public int DeepestLeavesSum(TreeNode root) 
+public class Solution 
+{
+    public TreeNode InsertIntoBST(TreeNode root, int val)
     {
-        Travel(root, 0);
-        return dictionary.Last().Value;
+        if (root is null)
+        {
+            root = new TreeNode(val);
+        }
+        else if (root.val < val)
+        {
+            if (root.right is null)
+            {
+                root.right = new TreeNode(val);
+            }
+            else
+            {
+                InsertIntoBST(root.right, val);
+            }
+        }
+        else
+        {
+            if (root.left is null)
+            {
+                root.left = new TreeNode(val);
+            }
+            else
+            {
+                InsertIntoBST(root.left, val);
+            }
+        }
+    
+        return root;
+    }
+}
+```
+
+https://leetcode.com/problems/valid-sudoku/
+
+``` C#
+using System.Collections.Generic;
+
+public class Solution
+{
+    int n = 9;
+    int subBoxesSize = 3;
+    char dot = '.';
+    public bool IsValidSudoku(char[][] board)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            // 세로
+            if (!IsDuplicated(0, n - 1, i, i, board))
+            {
+                return false;
+            }
+
+            // 가로
+            if (!IsDuplicated(i, i, 0, n - 1, board))
+            {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                var subBoxStartYIndex = i * subBoxesSize;
+                var subBoxStartXIndex = j * subBoxesSize;
+
+                if(!IsDuplicated(subBoxStartXIndex, subBoxStartXIndex + 2, subBoxStartYIndex, subBoxStartYIndex + 2, board))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    void Travel(TreeNode root, int depth)
+    bool IsDuplicated(int startX, int endX, int startY, int endY, char[][] board)
     {
-        if (root == null)
+        var hashSet = new HashSet<char>();
+        
+        for (int i = startY; i <= endY; i++)
         {
-            return;
+            for (int j = startX; j <= endX; j++)
+            {
+                var currentChar = board[i][j];
+                
+                if (currentChar == dot)
+                {
+                    continue;
+                }
+
+                if (hashSet.Contains(currentChar))
+                {
+                    return false;
+                }
+
+                hashSet.Add(currentChar);
+            }
         }
 
-        if (!dictionary.ContainsKey(depth))
-        {
-            dictionary.Add(depth, 0);
-        }
-
-        dictionary[depth] += root.val;
-        Travel(root.left, depth + 1);
-        Travel(root.right, depth + 1);
+        return true;
     }
 }
 ```
