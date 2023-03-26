@@ -1,4 +1,4 @@
-https://leetcode.com/problems/insert-into-a-binary-search-tree/
+https://leetcode.com/problems/binary-tree-pruning/description/
 
 ``` C#
 /**
@@ -14,111 +14,97 @@ https://leetcode.com/problems/insert-into-a-binary-search-tree/
  *     }
  * }
  */
-public class Solution 
-{
-    public TreeNode InsertIntoBST(TreeNode root, int val)
+public class Solution {
+    public TreeNode PruneTree(TreeNode root)
     {
         if (root is null)
         {
-            root = new TreeNode(val);
+            return root;
         }
-        else if (root.val < val)
+            
+        root.left = PruneTree(root.left);
+        root.right = PruneTree(root.right);
+
+        if (root.left is not null || root.right is not null)
         {
-            if (root.right is null)
-            {
-                root.right = new TreeNode(val);
-            }
-            else
-            {
-                InsertIntoBST(root.right, val);
-            }
+            return root;
         }
-        else
-        {
-            if (root.left is null)
-            {
-                root.left = new TreeNode(val);
-            }
-            else
-            {
-                InsertIntoBST(root.left, val);
-            }
-        }
-    
-        return root;
+
+        return root.val == 1 ? root : null;
     }
 }
 ```
 
-https://leetcode.com/problems/valid-sudoku/
+https://leetcode.com/problems/merge-intervals/description/
 
 ``` C#
-using System.Collections.Generic;
-
-public class Solution
+public int[][] Merge(int[][] intervals)
 {
-    int n = 9;
-    int subBoxesSize = 3;
-    char dot = '.';
-    public bool IsValidSudoku(char[][] board)
+    intervals = intervals.OrderBy(x => x[0]).ToArray();
+    
+    var result = new List<int[]>();
+
+    var start = intervals[0][0];
+    var end = intervals[0][1];
+
+    for (int i = 1; i < intervals.Length; i++)
     {
-        for (int i = 0; i < n; i++)
+        if (intervals[i][0] <= end)
         {
-            // 세로
-            if (!IsDuplicated(0, n - 1, i, i, board))
+            if (end < intervals[i][1])
             {
-                return false;
+                end = intervals[i][1];
             }
 
-            // 가로
-            if (!IsDuplicated(i, i, 0, n - 1, board))
-            {
-                return false;
-            }
+            continue;
         }
-
-        for (int i = 0; i < 3; i++)
+        else
         {
-            for (int j = 0; j < 3; j++)
-            {
-                var subBoxStartYIndex = i * subBoxesSize;
-                var subBoxStartXIndex = j * subBoxesSize;
+            result.Add(new int[] { start, end });
 
-                if(!IsDuplicated(subBoxStartXIndex, subBoxStartXIndex + 2, subBoxStartYIndex, subBoxStartYIndex + 2, board))
-                {
-                    return false;
-                }
-            }
+            start = intervals[i][0];
+            end = intervals[i][1];
         }
-
-        return true;
     }
 
-    bool IsDuplicated(int startX, int endX, int startY, int endY, char[][] board)
+    if (result.Count > 0)
     {
-        var hashSet = new HashSet<char>();
-        
-        for (int i = startY; i <= endY; i++)
+        var last = result[result.Count - 1];
+
+        if (last[0] != start || last[1] != end)
         {
-            for (int j = startX; j <= endX; j++)
-            {
-                var currentChar = board[i][j];
-                
-                if (currentChar == dot)
-                {
-                    continue;
-                }
-
-                if (hashSet.Contains(currentChar))
-                {
-                    return false;
-                }
-
-                hashSet.Add(currentChar);
-            }
+            result.Add(new int[] { start, end });
         }
-
-        return true;
     }
+    else
+    {
+        result.Add(new int[] { start, end });
+    }
+
+    return result.ToArray();
+}
+
+public int[][] Merge(int[][] intervals) {
+    var ordered = intervals.OrderBy(interval => interval[0]).ThenBy(interval => interval[1]);
+    var result = new List<int[]>();
+    
+    result.Add(ordered.Skip(1).Aggregate(ordered.First(), (runningInterval, currentInterval) =>
+    {
+        var runningEnd = runningInterval[1];
+        var currentStart = currentInterval[0];
+
+        if (runningEnd >= currentStart)
+        {
+            runningInterval[1] = Math.Max(currentInterval[1], runningInterval[1]);
+            return runningInterval;
+        }
+        else
+        {
+            result.Add(runningInterval);
+            return currentInterval;
+        }
+    }));
+
+    return result.ToArray();
 }
 ```
